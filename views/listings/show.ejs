@@ -1,0 +1,108 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="container mt-5">
+    <!-- Listing Title -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-8">
+            <h3><%= listing.title %></h3>
+        </div>
+    </div>
+
+    <!-- Listing Card -->
+    <div class="row justify-content-center mb-4">
+        <div class="card col-md-8 p-0">
+            <img src="<%= listing.image %>" class="card-img-top show-img" alt="Listing image">
+            <div class="card-body">
+                <p class="card-text"> <%= listing.owner.username %></p>
+                <p class="card-text"><strong>Description:</strong> <%= listing.description %></p>
+                <p class="card-text"><strong>Location:</strong> <%= listing.location %></p>
+                <p class="card-text"><strong>Country:</strong> <%= listing.country %></p>
+                <p class="card-text"><strong>Price:</strong> ₹ <%= listing.price.toLocaleString("en-IN") %></p>
+            </div>
+        </div>
+    </div>
+
+    <% if(currentUser && listing.owner._id.equals(currentUser._id)) { %>
+        <!-- Edit/Delete Buttons -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-8 d-flex gap-3">
+                <a class="btn btn-dark" href="/listings/<%= listing._id %>/edit">Edit</a>
+                <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+                    <button class="btn btn-dark">Delete</button>
+                </form>
+            </div>
+        </div>
+    <% } %>
+
+    <% if(currentUser) { %>
+        <form action="/listings/<%= listing._id %>/reviews" method="POST" novalidate class="needs-validation">
+            <!-- Rating Range Input -->
+            <div class="mb-4">
+                <label for="rating" class="form-label">Rating: <span id="ratingValue">3</span> ⭐</label>
+                <input 
+                    type="range" 
+                    class="form-range" 
+                    min="1" 
+                    max="5" 
+                    value="3" 
+                    id="rating" 
+                    name="review[rating]"
+                    oninput="document.getElementById('ratingValue').textContent = this.value"
+                >
+            </div>
+
+            <!-- Comment Textarea -->
+            <div class="mb-4">
+                <label for="comment" class="form-label">Comment</label>
+                <textarea 
+                    class="form-control" 
+                    id="comment" 
+                    name="review[comment]" 
+                    rows="3" 
+                    required
+                ></textarea>
+                <div class="invalid-feedback">
+                    Please enter a comment.
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">Add Review</button>
+        </form>
+    <% } %>
+
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <h4 class="mb-4">All Reviews</h4>
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <% for (let review of listing.reviews) { %>
+                    <div class="col">
+                        <div class="card shadow-sm h-100 p-3 mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Rating:
+                                    <% for (let i = 1; i <= 5; i++) { %>
+                                        <% if (i <= review.rating) { %>
+                                            <span>⭐</span>
+                                        <% } else { %>
+                                            <span style="opacity: 0.3;">⭐</span>
+                                        <% } %>
+                                    <% } %>
+                                </h5>
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    By: <%= review.author.username || 'Anonymous' %>
+                                </h6>
+                                <p class="card-text"><%= review.comment %></p>
+
+                                <!-- Delete Button -->
+                                <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+                                    <button class="btn btn-sm btn-danger mt-3">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

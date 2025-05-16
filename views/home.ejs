@@ -1,0 +1,17 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="container text-center mt-5">
+    <h1 class="display-4">Welcome to StayScape</h1>
+    <p class="lead">Book unique homes and experiences around the world.</p>
+    
+    <a href="/listings" class="btn btn-dark btn-lg mt-4">Browse Listings</a>
+    
+    <div class="mt-5">
+        <% if (!currentUser) { %>
+            <a href="/login" class="btn btn-outline-primary me-2">Login</a>
+            <a href="/register" class="btn btn-outline-success">Register</a>
+        <% } else { %>
+            <p class="mt-4">Welcome back, <strong><%= currentUser.username %></strong>!</p>
+        <% } %>
+    </div>
+</div>
