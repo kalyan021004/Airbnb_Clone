@@ -21,7 +21,7 @@ const ExpressError = require("./utils/ExpressError");
 const app = express();
 
 // MongoDB Connection
-const dbUrl = process.env.ATLASTDB_URL || 'mongodb://localhost:27017/airbnb-clone';
+const dbUrl = process.env.ATLASTDB_URL;
 
 async function main() {
     await mongoose.connect(dbUrl, {
